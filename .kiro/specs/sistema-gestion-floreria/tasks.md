@@ -92,7 +92,7 @@ Este plan cubre la implementación completa del sistema de gestión de florería
   - _Requisitos: 22.5, 23.5, 24.2, 25.3_
 
 
-- [ ] 5. Implementar módulo de autenticación
+- [~] 5. Implementar módulo de autenticación
   - [x] 5.1 Crear utilidades de autenticación
     - Crear backend/utils/auth.js con funciones de bcrypt y JWT
     - Implementar función hashPassword() usando bcrypt
@@ -140,7 +140,7 @@ Este plan cubre la implementación completa del sistema de gestión de florería
   - Asegurar que todos los tests pasen, preguntar al usuario si surgen dudas.
 
 
-- [ ] 7. Implementar módulo de productos
+- [~] 7. Implementar módulo de productos
   - [x] 7.1 Crear repositorio de productos
     - Crear backend/repositories/productosRepository.js
     - Implementar función findAll() con filtros de categoría y activo
@@ -174,15 +174,15 @@ Este plan cubre la implementación completa del sistema de gestión de florería
     - **Property 20: Price Greater Than Cost Validation**
     - **Valida: Requisitos 15.1**
 
-  - [~] 7.5 Escribir unit tests para módulo de productos
+  - [x] 7.5 Escribir unit tests para módulo de productos
     - Test de creación de producto con datos válidos
     - Test de rechazo de producto con precio <= costo
     - Test de actualización de producto
     - Test de soft delete
     - Test de filtrado por categoría
 
-- [ ] 8. Implementar módulo de inventario
-  - [~] 8.1 Crear repositorio de inventario
+- [x] 8. Implementar módulo de inventario
+  - [x] 8.1 Crear repositorio de inventario
     - Crear backend/repositories/inventarioRepository.js
     - Implementar función findAll() con filtro de estado
     - Implementar función findById()
@@ -194,13 +194,13 @@ Este plan cubre la implementación completa del sistema de gestión de florería
     - _Requisitos: 3.1, 3.3, 3.4_
 
 
-  - [~] 8.2 Escribir property tests para inventario
+  - [x] 8.2 Escribir property tests para inventario
     - **Property 7: Low Stock Alert Generation**
     - **Valida: Requisitos 3.4**
     - **Property 21: Non-Negative Quantity Validation**
     - **Valida: Requisitos 15.2**
 
-  - [~] 8.3 Implementar endpoints de inventario
+  - [x] 8.3 Implementar endpoints de inventario
     - Crear backend/routes/inventario.js
     - Implementar GET /api/v1/inventario con query params
     - Implementar GET /api/v1/inventario/:id
@@ -212,14 +212,14 @@ Este plan cubre la implementación completa del sistema de gestión de florería
     - Proteger endpoints con middleware authenticateToken
     - _Requisitos: 3.1, 3.2, 3.4, 15.2_
 
-  - [~] 8.4 Escribir unit tests para módulo de inventario
+  - [x] 8.4 Escribir unit tests para módulo de inventario
     - Test de creación de item de inventario
     - Test de rechazo de cantidad negativa
     - Test de generación de alertas de stock bajo
     - Test de cálculo de estado (ok/bajo/crítico)
 
-- [ ] 9. Implementar módulo de laboratorio de flores
-  - [~] 9.1 Crear servicio de laboratorio
+- [~] 9. Implementar módulo de laboratorio de flores
+  - [x] 9.1 Crear servicio de laboratorio
     - Crear backend/services/laboratorioService.js
     - Implementar función calculateCost() que suma ingredientes
     - Implementar función calculateSuggestedPrice() con margen
@@ -227,7 +227,7 @@ Este plan cubre la implementación completa del sistema de gestión de florería
     - Implementar función saveArrangement() que crea producto y receta
     - _Requisitos: 4.3, 4.5, 4.7, 4.9, 16.1, 16.3_
 
-  - [~] 9.2 Escribir property tests para laboratorio
+  - [x] 9.2 Escribir property tests para laboratorio
     - **Property 10: Arrangement Cost Calculation**
     - **Valida: Requisitos 4.3, 16.1**
     - **Property 11: Suggested Price Calculation**
@@ -237,7 +237,7 @@ Este plan cubre la implementación completa del sistema de gestión de florería
     - **Property 13: Arrangement Validation Against Inventory**
     - **Valida: Requisitos 4.9**
 
-  - [~] 9.3 Implementar endpoints de laboratorio
+  - [x] 9.3 Implementar endpoints de laboratorio
     - Crear backend/routes/laboratorio.js
     - Implementar POST /api/v1/laboratorio/calcular
     - Validar disponibilidad de inventario
@@ -248,16 +248,16 @@ Este plan cubre la implementación completa del sistema de gestión de florería
     - _Requisitos: 4.3, 4.4, 4.5, 4.7, 4.9_
 
 
-  - [~] 9.4 Escribir unit tests para módulo de laboratorio
+  - [-] 9.4 Escribir unit tests para módulo de laboratorio
     - Test de cálculo de costo con múltiples ingredientes
     - Test de cálculo de precio sugerido con margen
     - Test de validación de inventario insuficiente
     - Test de guardado de arreglo con receta
 
-- [ ] 10. Checkpoint - Verificar productos, inventario y laboratorio
+- [~] 10. Checkpoint - Verificar productos, inventario y laboratorio
   - Asegurar que todos los tests pasen, preguntar al usuario si surgen dudas.
 
-- [ ] 11. Implementar módulo de pedidos
+- [~] 11. Implementar módulo de pedidos
   - [~] 11.1 Crear repositorio de pedidos
     - Crear backend/repositories/pedidosRepository.js
     - Implementar función findAll() con filtros de estado, fecha y cliente
@@ -319,7 +319,7 @@ Este plan cubre la implementación completa del sistema de gestión de florería
     - Test de conteo de pedidos pendientes
     - Test de filtrado por estado y fecha
 
-- [ ] 12. Implementar módulo de ventas
+- [~] 12. Implementar módulo de ventas
   - [~] 12.1 Crear repositorio de ventas
     - Crear backend/repositories/ventasRepository.js
     - Implementar función findAll() con filtros de fecha y trabajador
@@ -374,7 +374,7 @@ Este plan cubre la implementación completa del sistema de gestión de florería
     - Test de cálculo de totales diarios
     - Test de cálculo de totales mensuales
 
-- [ ] 13. Implementar módulo de clientes
+- [~] 13. Implementar módulo de clientes
   - [~] 13.1 Crear repositorio de clientes
     - Crear backend/repositories/clientesRepository.js
     - Implementar función findAll() con búsqueda por nombre
@@ -407,7 +407,7 @@ Este plan cubre la implementación completa del sistema de gestión de florería
     - Test de cálculo de total de compras
 
 
-- [ ] 14. Implementar módulo de trabajadores
+- [~] 14. Implementar módulo de trabajadores
   - [~] 14.1 Crear repositorio de trabajadores
     - Crear backend/repositories/trabajadoresRepository.js
     - Implementar función findAll()
@@ -434,7 +434,7 @@ Este plan cubre la implementación completa del sistema de gestión de florería
     - Test de validación de formato de teléfono
     - Test de cálculo de total de ventas
 
-- [ ] 15. Implementar módulo de gastos
+- [~] 15. Implementar módulo de gastos
   - [~] 15.1 Crear repositorio de gastos
     - Crear backend/repositories/gastosRepository.js
     - Implementar función findAll() con filtros de fecha y categoría
@@ -463,10 +463,10 @@ Este plan cubre la implementación completa del sistema de gestión de florería
     - Test de cálculo de totales por período
 
 
-- [ ] 16. Checkpoint - Verificar módulos de negocio
+- [~] 16. Checkpoint - Verificar módulos de negocio
   - Asegurar que todos los tests pasen, preguntar al usuario si surgen dudas.
 
-- [ ] 17. Implementar módulo de reportes
+- [~] 17. Implementar módulo de reportes
   - [~] 17.1 Crear servicio de reportes
     - Crear backend/services/reportesService.js
     - Implementar función getSalesReport() con filtros de fecha
@@ -495,7 +495,7 @@ Este plan cubre la implementación completa del sistema de gestión de florería
     - Test de ventas por trabajador
     - Test de cálculo de ganancia neta
 
-- [ ] 18. Implementar middleware de validación y manejo de errores
+- [~] 18. Implementar middleware de validación y manejo de errores
   - [~] 18.1 Crear middleware de validación
     - Crear backend/middleware/validation.js
     - Implementar función validateProduct() para productos
@@ -543,7 +543,7 @@ Este plan cubre la implementación completa del sistema de gestión de florería
     - Test de códigos HTTP apropiados
     - Test de logging de errores
 
-- [ ] 19. Implementar sistema de logging
+- [~] 19. Implementar sistema de logging
   - [~] 19.1 Configurar Winston para logging
     - Crear backend/config/logger.js
     - Configurar niveles de log: ERROR, WARN, INFO, DEBUG
@@ -567,7 +567,7 @@ Este plan cubre la implementación completa del sistema de gestión de florería
     - Test de exclusión de datos sensibles
 
 
-- [ ] 20. Implementar rate limiting y seguridad adicional
+- [~] 20. Implementar rate limiting y seguridad adicional
   - [~] 20.1 Configurar rate limiting
     - Instalar express-rate-limit
     - Crear backend/middleware/rateLimiter.js
@@ -587,10 +587,10 @@ Este plan cubre la implementación completa del sistema de gestión de florería
     - Test de headers de seguridad
     - Test de prevención de SQL injection
 
-- [ ] 21. Checkpoint - Verificar backend completo
+- [~] 21. Checkpoint - Verificar backend completo
   - Asegurar que todos los tests pasen, preguntar al usuario si surgen dudas.
 
-- [ ] 22. Implementar Frontend Público (index.html)
+- [~] 22. Implementar Frontend Público (index.html)
   - [~] 22.1 Crear estructura HTML base
     - Crear index.html con estructura semántica
     - Incluir Bootstrap 5 desde CDN
@@ -656,7 +656,7 @@ Este plan cubre la implementación completa del sistema de gestión de florería
     - Probar en diferentes resoluciones (320px - 1920px)
     - _Requisitos: 19.1, 19.3, 19.5, 19.6_
 
-- [ ] 23. Implementar Panel Administrativo (dashboard.html)
+- [~] 23. Implementar Panel Administrativo (dashboard.html)
   - [~] 23.1 Crear estructura HTML base del dashboard
     - Crear dashboard.html con estructura de sidebar + main content
     - Crear sidebar con navegación por secciones
@@ -833,11 +833,11 @@ Este plan cubre la implementación completa del sistema de gestión de florería
     - Mostrar mensaje "Connection error. Please try again." para errores de red
     - _Requisitos: 20.3, 20.4, 20.5_
 
-- [ ] 24. Checkpoint - Verificar frontend completo
+- [~] 24. Checkpoint - Verificar frontend completo
   - Asegurar que todos los tests pasen, preguntar al usuario si surgen dudas.
 
 
-- [ ] 25. Implementar tests de integración
+- [~] 25. Implementar tests de integración
   - [~] 25.1 Escribir test de flujo completo de pedido
     - Crear cliente
     - Crear pedido
@@ -865,7 +865,7 @@ Este plan cubre la implementación completa del sistema de gestión de florería
     - **Property 25: Recipe Cost Recalculation on Price Change**
     - **Valida: Requisitos 16.5**
 
-- [ ] 26. Crear documentación del proyecto
+- [~] 26. Crear documentación del proyecto
   - [~] 26.1 Crear README.md principal
     - Descripción del proyecto
     - Stack tecnológico utilizado
@@ -895,7 +895,7 @@ Este plan cubre la implementación completa del sistema de gestión de florería
     - _Requisitos: 23.4_
 
 
-- [ ] 27. Configurar scripts de npm y utilidades
+- [~] 27. Configurar scripts de npm y utilidades
   - [~] 27.1 Configurar scripts en package.json
     - Script "start" para ejecutar servidor en producción
     - Script "dev" para ejecutar con nodemon en desarrollo
@@ -919,7 +919,7 @@ Este plan cubre la implementación completa del sistema de gestión de florería
     - Verificar que los datos se insertaron correctamente
     - Registrar resultado en consola
 
-- [ ] 28. Optimización y mejoras finales
+- [~] 28. Optimización y mejoras finales
   - [~] 28.1 Optimizar consultas de base de datos
     - Revisar queries frecuentes y agregar índices si es necesario
     - Implementar paginación en endpoints que retornan listas grandes
@@ -937,7 +937,7 @@ Este plan cubre la implementación completa del sistema de gestión de florería
     - Agregar labels a todos los inputs de formularios
     - Asegurar navegación por teclado funcional
 
-- [ ] 29. Checkpoint final - Verificar sistema completo
+- [~] 29. Checkpoint final - Verificar sistema completo
   - Ejecutar todos los tests (unit, property-based, integration)
   - Verificar cobertura de código >= 80%
   - Ejecutar npm audit para verificar vulnerabilidades

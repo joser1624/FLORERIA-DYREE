@@ -114,15 +114,15 @@ app.get('/api/v1', (req, res) => {
 // Mount route modules
 app.use('/api/v1/auth', require('./routes/auth'));
 app.use('/api/v1/productos', require('./routes/productos'));
+app.use('/api/v1/inventario', require('./routes/inventario'));
+app.use('/api/v1/laboratorio', require('./routes/laboratorio'));
 // TODO: Mount remaining route modules as they are implemented
-// app.use('/api/v1/inventario', require('./routes/inventario'));
 // app.use('/api/v1/pedidos', require('./routes/pedidos'));
 // app.use('/api/v1/ventas', require('./routes/ventas'));
 // app.use('/api/v1/clientes', require('./routes/clientes'));
 // app.use('/api/v1/trabajadores', require('./routes/trabajadores'));
 // app.use('/api/v1/gastos', require('./routes/gastos'));
 // app.use('/api/v1/reportes', require('./routes/reportes'));
-// app.use('/api/v1/laboratorio', require('./routes/laboratorio'));
 
 // 404 Handler - Route not found
 app.use((req, res) => {
