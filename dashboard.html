@@ -1,0 +1,1194 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Panel Admin | Encantos Eternos</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    :root {
+      --cream: #fdf6ee;
+      --cream-dark: #f5e9d8;
+      --green: #2d4a2d;
+      --green-mid: #3d6b3d;
+      --green-light: #8aab7a;
+      --rose: #c9636a;
+      --rose-light: #e8a0a5;
+      --gold: #c8a96e;
+      --gold-light: #e8d5a3;
+      --sidebar-w: 260px;
+      --sidebar-bg: #1e3320;
+      --text-dark: #1a1a1a;
+      --text-mid: #5a5a5a;
+      --card-bg: #ffffff;
+      --body-bg: #f7f3ee;
+      --border: rgba(0,0,0,0.07);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Jost', sans-serif; background: var(--body-bg); color: var(--text-dark); display: flex; min-height: 100vh; }
+
+    /* ===== SIDEBAR ===== */
+    .sidebar {
+      width: var(--sidebar-w);
+      background: var(--sidebar-bg);
+      min-height: 100vh;
+      position: fixed; left: 0; top: 0;
+      display: flex; flex-direction: column;
+      z-index: 100;
+      transition: transform 0.3s;
+    }
+    .sidebar-logo {
+      padding: 2rem 1.5rem 1.5rem;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+    }
+    .sidebar-logo-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.25rem; font-weight: 400;
+      color: white; line-height: 1.1;
+    }
+    .sidebar-logo-sub { font-size: 0.6rem; letter-spacing: 0.25em; color: var(--gold); text-transform: uppercase; }
+
+    .sidebar-section { padding: 1.2rem 1rem 0.4rem; }
+    .sidebar-section-label {
+      font-size: 0.6rem; letter-spacing: 0.22em; text-transform: uppercase;
+      color: rgba(255,255,255,0.3); padding: 0 0.6rem; margin-bottom: 0.3rem;
+    }
+    .sidebar-nav { list-style: none; padding: 0; }
+    .sidebar-nav li a {
+      display: flex; align-items: center; gap: 0.75rem;
+      padding: 0.65rem 0.8rem;
+      border-radius: 6px;
+      text-decoration: none;
+      font-size: 0.85rem;
+      color: rgba(255,255,255,0.65);
+      transition: all 0.2s;
+      margin-bottom: 0.1rem;
+    }
+    .sidebar-nav li a i { width: 18px; text-align: center; font-size: 0.85rem; }
+    .sidebar-nav li a:hover { background: rgba(255,255,255,0.07); color: white; }
+    .sidebar-nav li a.active { background: var(--rose); color: white; }
+    .sidebar-nav li a .badge-count {
+      margin-left: auto; background: var(--rose);
+      color: white; font-size: 0.65rem; padding: 0.15rem 0.45rem; border-radius: 20px;
+    }
+    .sidebar-nav li a.active .badge-count { background: rgba(255,255,255,0.25); }
+
+    .sidebar-footer {
+      margin-top: auto;
+      padding: 1.2rem 1.5rem;
+      border-top: 1px solid rgba(255,255,255,0.07);
+    }
+    .sidebar-user { display: flex; align-items: center; gap: 0.75rem; }
+    .sidebar-avatar {
+      width: 36px; height: 36px;
+      background: var(--rose); border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.85rem; color: white; font-weight: 500;
+      flex-shrink: 0;
+    }
+    .sidebar-user-name { font-size: 0.82rem; color: white; line-height: 1.2; }
+    .sidebar-user-role { font-size: 0.68rem; color: var(--gold); text-transform: uppercase; letter-spacing: 0.1em; }
+    .sidebar-logout {
+      margin-left: auto; background: none; border: none;
+      color: rgba(255,255,255,0.4); font-size: 1rem; cursor: pointer;
+      transition: color 0.2s;
+    }
+    .sidebar-logout:hover { color: var(--rose); }
+
+    /* ===== MAIN CONTENT ===== */
+    .main {
+      margin-left: var(--sidebar-w);
+      flex: 1; min-height: 100vh;
+      display: flex; flex-direction: column;
+    }
+
+    /* TOP BAR */
+    .topbar {
+      background: white;
+      border-bottom: 1px solid var(--border);
+      padding: 0.9rem 2rem;
+      display: flex; align-items: center; justify-content: space-between;
+      position: sticky; top: 0; z-index: 50;
+    }
+    .topbar-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.5rem; font-weight: 600; color: var(--green);
+    }
+    .topbar-subtitle { font-size: 0.75rem; color: var(--text-mid); }
+    .topbar-actions { display: flex; align-items: center; gap: 0.75rem; }
+    .topbar-icon-btn {
+      width: 36px; height: 36px;
+      background: var(--body-bg); border: 1px solid var(--border);
+      border-radius: 8px; display: flex; align-items: center; justify-content: center;
+      cursor: pointer; transition: all 0.2s; position: relative; text-decoration: none;
+      color: var(--text-mid);
+    }
+    .topbar-icon-btn:hover { background: var(--green); color: white; border-color: var(--green); }
+    .notif-dot {
+      width: 8px; height: 8px; background: var(--rose); border-radius: 50%;
+      position: absolute; top: 4px; right: 4px; border: 1.5px solid white;
+    }
+    .btn-wa-top {
+      background: #25D366; color: white; border: none;
+      border-radius: 8px; font-size: 0.78rem; padding: 0.5rem 1rem;
+      display: flex; align-items: center; gap: 0.4rem; cursor: pointer;
+      transition: background 0.2s; text-decoration: none;
+    }
+    .btn-wa-top:hover { background: #128C7E; color: white; }
+
+    /* PAGE CONTENT */
+    .page-content { padding: 2rem; flex: 1; }
+    .page-section { display: none; }
+    .page-section.active { display: block; }
+
+    /* === KPI CARDS === */
+    .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.2rem; margin-bottom: 2rem; }
+    .kpi-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px; padding: 1.4rem;
+      position: relative; overflow: hidden;
+      transition: box-shadow 0.2s;
+    }
+    .kpi-card:hover { box-shadow: 0 6px 24px rgba(0,0,0,0.08); }
+    .kpi-icon {
+      width: 44px; height: 44px;
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem; margin-bottom: 1rem;
+    }
+    .kpi-icon.green { background: rgba(45,74,45,0.1); color: var(--green); }
+    .kpi-icon.rose  { background: rgba(201,99,106,0.1); color: var(--rose); }
+    .kpi-icon.gold  { background: rgba(200,169,110,0.12); color: var(--gold); }
+    .kpi-icon.blue  { background: rgba(59,130,246,0.1); color: #3b82f6; }
+    .kpi-value {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2rem; font-weight: 600; color: var(--text-dark); line-height: 1;
+    }
+    .kpi-label { font-size: 0.75rem; color: var(--text-mid); margin-top: 0.3rem; }
+    .kpi-change {
+      font-size: 0.72rem; margin-top: 0.5rem;
+      display: flex; align-items: center; gap: 0.3rem;
+    }
+    .kpi-change.up { color: #16a34a; }
+    .kpi-change.down { color: var(--rose); }
+    .kpi-accent {
+      position: absolute; bottom: 0; left: 0; right: 0; height: 3px;
+    }
+    .kpi-accent.green { background: linear-gradient(90deg, var(--green), var(--green-light)); }
+    .kpi-accent.rose  { background: linear-gradient(90deg, var(--rose), var(--rose-light)); }
+    .kpi-accent.gold  { background: linear-gradient(90deg, var(--gold), var(--gold-light)); }
+    .kpi-accent.blue  { background: linear-gradient(90deg, #3b82f6, #93c5fd); }
+
+    /* === CHARTS === */
+    .charts-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 1.2rem; margin-bottom: 2rem; }
+    .chart-card {
+      background: var(--card-bg); border: 1px solid var(--border);
+      border-radius: 12px; padding: 1.5rem;
+    }
+    .chart-title { font-size: 0.8rem; font-weight: 600; color: var(--text-dark); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.3rem; }
+    .chart-sub { font-size: 0.72rem; color: var(--text-mid); margin-bottom: 1.2rem; }
+
+    /* === TABLES === */
+    .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.2rem; }
+    .section-header h3 { font-size: 0.85rem; font-weight: 600; color: var(--text-dark); text-transform: uppercase; letter-spacing: 0.08em; }
+    .table-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+    .table-card table { width: 100%; border-collapse: collapse; }
+    .table-card thead th {
+      font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.12em;
+      color: var(--text-mid); padding: 0.85rem 1.2rem;
+      background: var(--body-bg); border-bottom: 1px solid var(--border);
+      font-weight: 500;
+    }
+    .table-card tbody td { padding: 0.9rem 1.2rem; border-bottom: 1px solid var(--border); font-size: 0.85rem; }
+    .table-card tbody tr:last-child td { border-bottom: none; }
+    .table-card tbody tr:hover { background: var(--body-bg); }
+
+    .status-badge {
+      font-size: 0.68rem; padding: 0.25rem 0.65rem; border-radius: 20px;
+      font-weight: 500; letter-spacing: 0.05em; text-transform: uppercase;
+      display: inline-block;
+    }
+    .status-pendiente  { background: rgba(234,179,8,0.1); color: #a16207; }
+    .status-preparando { background: rgba(59,130,246,0.1); color: #2563eb; }
+    .status-listo      { background: rgba(22,163,74,0.1); color: #16a34a; }
+    .status-entregado  { background: rgba(45,74,45,0.1); color: var(--green); }
+    .status-cancelado  { background: rgba(201,99,106,0.1); color: var(--rose); }
+    .stock-ok    { color: #16a34a; font-weight: 500; }
+    .stock-bajo  { color: #d97706; font-weight: 500; }
+    .stock-critico { color: var(--rose); font-weight: 500; }
+
+    /* === FORMS & BUTTONS === */
+    .btn-primary-admin {
+      background: var(--green); color: white; border: none;
+      border-radius: 8px; font-size: 0.78rem; padding: 0.55rem 1.1rem;
+      transition: background 0.2s; cursor: pointer; display: inline-flex; align-items: center; gap: 0.4rem;
+    }
+    .btn-primary-admin:hover { background: var(--green-mid); color: white; }
+    .btn-rose-admin {
+      background: var(--rose); color: white; border: none;
+      border-radius: 8px; font-size: 0.78rem; padding: 0.55rem 1.1rem;
+      transition: background 0.2s; cursor: pointer; display: inline-flex; align-items: center; gap: 0.4rem;
+    }
+    .btn-outline-admin {
+      background: transparent; color: var(--text-mid); border: 1px solid var(--border);
+      border-radius: 8px; font-size: 0.78rem; padding: 0.5rem 1rem;
+      cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; gap: 0.4rem;
+    }
+    .btn-outline-admin:hover { border-color: var(--green); color: var(--green); }
+    .btn-icon-sm {
+      width: 30px; height: 30px; background: var(--body-bg); border: 1px solid var(--border);
+      border-radius: 6px; display: inline-flex; align-items: center; justify-content: center;
+      cursor: pointer; font-size: 0.8rem; color: var(--text-mid); transition: all 0.2s;
+    }
+    .btn-icon-sm:hover.edit { background: var(--green); color: white; border-color: var(--green); }
+    .btn-icon-sm:hover.del  { background: var(--rose);  color: white; border-color: var(--rose); }
+
+    .form-control-admin, .form-select-admin {
+      border: 1px solid var(--border); border-radius: 8px;
+      padding: 0.55rem 0.85rem; font-size: 0.85rem; font-family: 'Jost', sans-serif;
+      color: var(--text-dark); background: white; outline: none; width: 100%;
+      transition: border-color 0.2s;
+    }
+    .form-control-admin:focus, .form-select-admin:focus { border-color: var(--green); box-shadow: 0 0 0 3px rgba(45,74,45,0.08); }
+    label.admin-label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--text-mid); display: block; margin-bottom: 0.35rem; }
+
+    /* ALERT STOCK */
+    .alert-stock {
+      background: rgba(217,119,6,0.08); border: 1px solid rgba(217,119,6,0.2);
+      border-radius: 10px; padding: 0.85rem 1.1rem; margin-bottom: 1.2rem;
+      display: flex; align-items: center; gap: 0.75rem; font-size: 0.83rem;
+    }
+
+    /* BOTTOM GRID */
+    .bottom-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; }
+
+    /* MODAL */
+    .modal-content { border-radius: 12px; border: 1px solid var(--border); }
+    .modal-header { border-bottom: 1px solid var(--border); padding: 1.2rem 1.5rem; }
+    .modal-title { font-size: 1rem; font-weight: 600; color: var(--text-dark); }
+    .modal-body { padding: 1.5rem; }
+    .modal-footer { border-top: 1px solid var(--border); padding: 1rem 1.5rem; }
+
+    /* SEARCH BAR */
+    .search-wrap { position: relative; }
+    .search-wrap i { position: absolute; left: 0.75rem; top: 50%; transform: translateY(-50%); font-size: 0.8rem; color: var(--text-mid); }
+    .search-input {
+      padding-left: 2.2rem !important; border-radius: 8px;
+      border: 1px solid var(--border); font-size: 0.83rem; padding: 0.5rem 0.85rem;
+      outline: none; background: white; font-family: 'Jost', sans-serif;
+      transition: border-color 0.2s;
+    }
+    .search-input:focus { border-color: var(--green); }
+
+    /* Scroll */
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-thumb { background: var(--green-light); border-radius: 4px; }
+
+    @media (max-width: 992px) {
+      .sidebar { transform: translateX(-100%); }
+      .sidebar.open { transform: translateX(0); }
+      .main { margin-left: 0; }
+      .kpi-grid { grid-template-columns: repeat(2,1fr); }
+      .charts-grid, .bottom-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 576px) {
+      .kpi-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ===== SIDEBAR ===== -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <div class="sidebar-logo-name">Encantos Eternos</div>
+    <div class="sidebar-logo-sub">Panel de Gestión</div>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">Principal</div>
+    <ul class="sidebar-nav">
+      <li><a href="#" class="active" onclick="showSection('dashboard', this)">
+        <i class="fas fa-chart-pie"></i> Dashboard
+      </a></li>
+      <li><a href="#" onclick="showSection('pedidos', this)">
+        <i class="fas fa-shopping-bag"></i> Pedidos
+        <span class="badge-count" id="badgePedidos">3</span>
+      </a></li>
+      <li><a href="#" onclick="showSection('ventas', this)">
+        <i class="fas fa-cash-register"></i> Ventas
+      </a></li>
+    </ul>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">Catálogo</div>
+    <ul class="sidebar-nav">
+      <li><a href="#" onclick="showSection('productos', this)">
+        <i class="fas fa-tags"></i> Productos
+      </a></li>
+      <li><a href="#" onclick="showSection('inventario', this)">
+        <i class="fas fa-boxes"></i> Inventario
+        <span class="badge-count" style="background:var(--gold); color:#333;" id="badgeStock">2</span>
+      </a></li>
+      <li><a href="laboratorio.html">
+        <i class="fas fa-flask"></i> Laboratorio
+      </a></li>
+    </ul>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">Personas</div>
+    <ul class="sidebar-nav">
+      <li><a href="#" onclick="showSection('clientes', this)">
+        <i class="fas fa-users"></i> Clientes
+      </a></li>
+      <li><a href="#" onclick="showSection('trabajadores', this)">
+        <i class="fas fa-user-tie"></i> Trabajadores
+      </a></li>
+    </ul>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">Finanzas</div>
+    <ul class="sidebar-nav">
+      <li><a href="#" onclick="showSection('gastos', this)">
+        <i class="fas fa-receipt"></i> Gastos
+      </a></li>
+      <li><a href="#" onclick="showSection('reportes', this)">
+        <i class="fas fa-chart-bar"></i> Reportes
+      </a></li>
+    </ul>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">Sistema</div>
+    <ul class="sidebar-nav">
+      <li><a href="#" onclick="showSection('usuarios', this)">
+        <i class="fas fa-shield-alt"></i> Usuarios
+      </a></li>
+    </ul>
+  </div>
+
+  <div class="sidebar-footer">
+    <div class="sidebar-user">
+      <div class="sidebar-avatar" id="avatarInitial">A</div>
+      <div>
+        <div class="sidebar-user-name" id="sidebarUserName">Administrador</div>
+        <div class="sidebar-user-role" id="sidebarUserRole">Admin</div>
+      </div>
+      <button class="sidebar-logout" onclick="logout()" title="Cerrar sesión">
+        <i class="fas fa-sign-out-alt"></i>
+      </button>
+    </div>
+  </div>
+</aside>
+
+<!-- ===== MAIN ===== -->
+<div class="main">
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div>
+      <div class="topbar-title" id="topbarTitle">Dashboard</div>
+      <div class="topbar-subtitle" id="topbarDate"></div>
+    </div>
+    <div class="topbar-actions">
+      <a href="index.html" class="topbar-icon-btn" title="Ver sitio web" target="_blank">
+        <i class="fas fa-external-link-alt" style="font-size:0.8rem;"></i>
+      </a>
+      <div class="topbar-icon-btn" title="Notificaciones">
+        <i class="fas fa-bell" style="font-size:0.85rem;"></i>
+        <span class="notif-dot"></span>
+      </div>
+      <a href="https://wa.me/51999999999" target="_blank" class="btn-wa-top">
+        <i class="fab fa-whatsapp"></i> WhatsApp
+      </a>
+      <button class="d-lg-none btn-outline-admin" onclick="document.getElementById('sidebar').classList.toggle('open')">
+        <i class="fas fa-bars"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- PAGE CONTENT -->
+  <div class="page-content">
+
+    <!-- ======= DASHBOARD ======= -->
+    <div class="page-section active" id="sec-dashboard">
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <div class="kpi-icon green"><i class="fas fa-coins"></i></div>
+          <div class="kpi-value">S/ 1,240</div>
+          <div class="kpi-label">Ventas del día</div>
+          <div class="kpi-change up"><i class="fas fa-arrow-up"></i> +12% vs ayer</div>
+          <div class="kpi-accent green"></div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-icon rose"><i class="fas fa-calendar-alt"></i></div>
+          <div class="kpi-value">S/ 18,350</div>
+          <div class="kpi-label">Ventas del mes</div>
+          <div class="kpi-change up"><i class="fas fa-arrow-up"></i> +8% vs mes anterior</div>
+          <div class="kpi-accent rose"></div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-icon gold"><i class="fas fa-shopping-bag"></i></div>
+          <div class="kpi-value">7</div>
+          <div class="kpi-label">Pedidos pendientes</div>
+          <div class="kpi-change down"><i class="fas fa-arrow-down"></i> -2 desde ayer</div>
+          <div class="kpi-accent gold"></div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-icon blue"><i class="fas fa-chart-line"></i></div>
+          <div class="kpi-value">S/ 9,820</div>
+          <div class="kpi-label">Ganancia neta del mes</div>
+          <div class="kpi-change up"><i class="fas fa-arrow-up"></i> +5% vs mes anterior</div>
+          <div class="kpi-accent blue"></div>
+        </div>
+      </div>
+
+      <div class="charts-grid">
+        <div class="chart-card">
+          <div class="chart-title">Ventas de la semana</div>
+          <div class="chart-sub">Ingresos diarios (S/)</div>
+          <canvas id="chartVentas" height="100"></canvas>
+        </div>
+        <div class="chart-card">
+          <div class="chart-title">Productos más vendidos</div>
+          <div class="chart-sub">Top 5 este mes</div>
+          <canvas id="chartTop" height="180"></canvas>
+        </div>
+      </div>
+
+      <div class="bottom-grid">
+        <!-- Últimos pedidos -->
+        <div>
+          <div class="section-header">
+            <h3>Últimos pedidos</h3>
+            <button class="btn-outline-admin" onclick="showSection('pedidos', null)">Ver todos</button>
+          </div>
+          <div class="table-card">
+            <table>
+              <thead>
+                <tr>
+                  <th>Cliente</th><th>Producto</th><th>Precio</th><th>Estado</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>María López</td><td>Ramo Romántico</td><td>S/ 85</td><td><span class="status-badge status-pendiente">Pendiente</span></td></tr>
+                <tr><td>José Cárdenas</td><td>Caja de Rosas</td><td>S/ 120</td><td><span class="status-badge status-preparando">Preparando</span></td></tr>
+                <tr><td>Ana Torres</td><td>Bouquet Nupcial</td><td>S/ 180</td><td><span class="status-badge status-listo">Listo</span></td></tr>
+                <tr><td>Luis Quispe</td><td>Arreglo Festivo</td><td>S/ 65</td><td><span class="status-badge status-entregado">Entregado</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Stock bajo -->
+        <div>
+          <div class="section-header">
+            <h3>Alerta de stock</h3>
+            <button class="btn-outline-admin" onclick="showSection('inventario', null)">Ver inventario</button>
+          </div>
+          <div class="alert-stock">
+            <i class="fas fa-exclamation-triangle" style="color:#d97706;font-size:1.1rem;flex-shrink:0;"></i>
+            <span>2 productos con stock bajo. Revisar inventario.</span>
+          </div>
+          <div class="table-card">
+            <table>
+              <thead>
+                <tr><th>Material</th><th>Stock</th><th>Mínimo</th><th>Estado</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>Rosas rojas</td><td class="stock-bajo">8 und</td><td>20</td><td><span class="status-badge status-pendiente">Bajo</span></td></tr>
+                <tr><td>Papel decorativo</td><td class="stock-critico">3 und</td><td>15</td><td><span class="status-badge status-cancelado">Crítico</span></td></tr>
+                <tr><td>Lirios</td><td class="stock-ok">45 und</td><td>15</td><td><span class="status-badge status-entregado">OK</span></td></tr>
+                <tr><td>Cintas doradas</td><td class="stock-ok">32 und</td><td>10</td><td><span class="status-badge status-entregado">OK</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======= PEDIDOS ======= -->
+    <div class="page-section" id="sec-pedidos">
+      <div class="section-header">
+        <h3>Gestión de Pedidos</h3>
+        <button class="btn-primary-admin" data-bs-toggle="modal" data-bs-target="#modalPedido">
+          <i class="fas fa-plus"></i> Nuevo Pedido
+        </button>
+      </div>
+      <div class="d-flex gap-2 mb-3 flex-wrap">
+        <div class="search-wrap">
+          <i class="fas fa-search"></i>
+          <input type="text" class="search-input" placeholder="Buscar cliente..." style="width:220px;">
+        </div>
+        <select class="form-select-admin" style="width:auto;">
+          <option>Todos los estados</option>
+          <option>Pendiente</option><option>En preparación</option>
+          <option>Listo</option><option>Entregado</option><option>Cancelado</option>
+        </select>
+        <select class="form-select-admin" style="width:auto;">
+          <option>Todas las fechas</option>
+          <option>Hoy</option><option>Esta semana</option><option>Este mes</option>
+        </select>
+      </div>
+      <div class="table-card">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th><th>Cliente</th><th>Teléfono</th><th>Producto</th>
+              <th>Entrega</th><th>Precio</th><th>Estado</th><th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="tbodyPedidos">
+            <tr>
+              <td>#001</td><td>María López</td><td>987654321</td><td>Ramo Romántico</td>
+              <td>15/01/2025</td><td>S/ 85</td>
+              <td><span class="status-badge status-pendiente">Pendiente</span></td>
+              <td><span class="btn-icon-sm edit" title="Editar"><i class="fas fa-pen"></i></span> <span class="btn-icon-sm del" title="Cancelar"><i class="fas fa-times"></i></span></td>
+            </tr>
+            <tr>
+              <td>#002</td><td>José Cárdenas</td><td>956321478</td><td>Caja de Rosas Pastel</td>
+              <td>16/01/2025</td><td>S/ 120</td>
+              <td><span class="status-badge status-preparando">Preparando</span></td>
+              <td><span class="btn-icon-sm edit"><i class="fas fa-pen"></i></span> <span class="btn-icon-sm del"><i class="fas fa-times"></i></span></td>
+            </tr>
+            <tr>
+              <td>#003</td><td>Ana Torres</td><td>912345678</td><td>Bouquet Nupcial</td>
+              <td>20/01/2025</td><td>S/ 180</td>
+              <td><span class="status-badge status-listo">Listo</span></td>
+              <td><span class="btn-icon-sm edit"><i class="fas fa-pen"></i></span> <span class="btn-icon-sm del"><i class="fas fa-times"></i></span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ======= VENTAS ======= -->
+    <div class="page-section" id="sec-ventas">
+      <div class="section-header">
+        <h3>Registro de Ventas</h3>
+        <button class="btn-primary-admin" data-bs-toggle="modal" data-bs-target="#modalVenta">
+          <i class="fas fa-plus"></i> Registrar Venta
+        </button>
+      </div>
+      <div class="kpi-grid" style="grid-template-columns: repeat(3,1fr); margin-bottom:1.5rem;">
+        <div class="kpi-card">
+          <div class="kpi-icon green"><i class="fas fa-coins"></i></div>
+          <div class="kpi-value">S/ 1,240</div>
+          <div class="kpi-label">Ventas hoy</div>
+          <div class="kpi-accent green"></div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-icon rose"><i class="fas fa-receipt"></i></div>
+          <div class="kpi-value">14</div>
+          <div class="kpi-label">Transacciones hoy</div>
+          <div class="kpi-accent rose"></div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-icon gold"><i class="fas fa-calculator"></i></div>
+          <div class="kpi-value">S/ 88.57</div>
+          <div class="kpi-label">Ticket promedio</div>
+          <div class="kpi-accent gold"></div>
+        </div>
+      </div>
+      <div class="table-card">
+        <table>
+          <thead>
+            <tr><th>#</th><th>Producto</th><th>Cantidad</th><th>Precio</th><th>Trabajador</th><th>Pago</th><th>Fecha</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>#V001</td><td>Ramo Romántico</td><td>2</td><td>S/ 170</td><td>Carmen R.</td><td><span class="status-badge status-listo">Yape</span></td><td>14/01 10:30</td></tr>
+            <tr><td>#V002</td><td>Arreglo Festivo</td><td>1</td><td>S/ 65</td><td>María P.</td><td><span class="status-badge status-preparando">Efectivo</span></td><td>14/01 11:15</td></tr>
+            <tr><td>#V003</td><td>Caja Sorpresa</td><td>1</td><td>S/ 110</td><td>Carmen R.</td><td><span class="status-badge status-pendiente">Tarjeta</span></td><td>14/01 12:00</td></tr>
+            <tr><td>#V004</td><td>Flores + Peluche</td><td>1</td><td>S/ 75</td><td>María P.</td><td><span class="status-badge status-listo">Yape</span></td><td>14/01 13:40</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ======= PRODUCTOS ======= -->
+    <div class="page-section" id="sec-productos">
+      <div class="section-header">
+        <h3>Gestión de Productos</h3>
+        <button class="btn-primary-admin" data-bs-toggle="modal" data-bs-target="#modalProducto">
+          <i class="fas fa-plus"></i> Nuevo Producto
+        </button>
+      </div>
+      <div class="d-flex gap-2 mb-3">
+        <div class="search-wrap">
+          <i class="fas fa-search"></i>
+          <input class="search-input" placeholder="Buscar producto..." style="width:220px;">
+        </div>
+        <select class="form-select-admin" style="width:auto;">
+          <option>Todas las categorías</option>
+          <option>Ramos</option><option>Cajas</option><option>Arreglos</option><option>Sorpresas</option>
+        </select>
+      </div>
+      <div class="table-card">
+        <table>
+          <thead>
+            <tr><th>Imagen</th><th>Nombre</th><th>Categoría</th><th>Precio</th><th>Costo</th><th>Stock</th><th>Acciones</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><img src="https://images.unsplash.com/photo-1582735689369-4fe89db7114c?w=60&h=60&fit=crop" style="width:40px;height:40px;object-fit:cover;border-radius:6px;"></td>
+              <td><strong>Ramo Romántico</strong></td><td>Ramos</td><td>S/ 85</td><td>S/ 45</td><td class="stock-ok">∞</td>
+              <td><span class="btn-icon-sm edit"><i class="fas fa-pen"></i></span> <span class="btn-icon-sm del"><i class="fas fa-trash"></i></span></td>
+            </tr>
+            <tr>
+              <td><img src="https://images.unsplash.com/photo-1455582916367-25f75bfc6710?w=60&h=60&fit=crop" style="width:40px;height:40px;object-fit:cover;border-radius:6px;"></td>
+              <td><strong>Caja de Rosas Pastel</strong></td><td>Cajas</td><td>S/ 120</td><td>S/ 65</td><td class="stock-ok">15 und</td>
+              <td><span class="btn-icon-sm edit"><i class="fas fa-pen"></i></span> <span class="btn-icon-sm del"><i class="fas fa-trash"></i></span></td>
+            </tr>
+            <tr>
+              <td><img src="https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=60&h=60&fit=crop" style="width:40px;height:40px;object-fit:cover;border-radius:6px;"></td>
+              <td><strong>Bouquet Nupcial</strong></td><td>Arreglos</td><td>S/ 180</td><td>S/ 95</td><td class="stock-ok">∞</td>
+              <td><span class="btn-icon-sm edit"><i class="fas fa-pen"></i></span> <span class="btn-icon-sm del"><i class="fas fa-trash"></i></span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ======= INVENTARIO ======= -->
+    <div class="page-section" id="sec-inventario">
+      <div class="section-header">
+        <h3>Control de Inventario</h3>
+        <button class="btn-primary-admin" data-bs-toggle="modal" data-bs-target="#modalInventario">
+          <i class="fas fa-plus"></i> Agregar Material
+        </button>
+      </div>
+      <div class="alert-stock">
+        <i class="fas fa-exclamation-triangle" style="color:#d97706;font-size:1.1rem;flex-shrink:0;"></i>
+        <strong>Alerta:</strong>&nbsp;2 materiales por debajo del stock mínimo. Considere reabastecerlos pronto.
+      </div>
+      <div class="table-card">
+        <table>
+          <thead>
+            <tr><th>Material</th><th>Categoría</th><th>Stock actual</th><th>Stock mínimo</th><th>Precio unit.</th><th>Estado</th><th>Acciones</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Rosas rojas</td><td>Flores</td><td class="stock-bajo">8 und</td><td>20</td><td>S/ 2.50</td><td><span class="status-badge status-pendiente">Stock bajo</span></td><td><span class="btn-icon-sm edit"><i class="fas fa-pen"></i></span></td></tr>
+            <tr><td>Papel decorativo</td><td>Materiales</td><td class="stock-critico">3 und</td><td>15</td><td>S/ 1.20</td><td><span class="status-badge status-cancelado">Crítico</span></td><td><span class="btn-icon-sm edit"><i class="fas fa-pen"></i></span></td></tr>
+            <tr><td>Lirios blancos</td><td>Flores</td><td class="stock-ok">45 und</td><td>15</td><td>S/ 3.00</td><td><span class="status-badge status-entregado">OK</span></td><td><span class="btn-icon-sm edit"><i class="fas fa-pen"></i></span></td></tr>
+            <tr><td>Girasoles</td><td>Flores</td><td class="stock-ok">28 und</td><td>10</td><td>S/ 2.00</td><td><span class="status-badge status-entregado">OK</span></td><td><span class="btn-icon-sm edit"><i class="fas fa-pen"></i></span></td></tr>
+            <tr><td>Cintas doradas</td><td>Decoración</td><td class="stock-ok">32 und</td><td>10</td><td>S/ 0.80</td><td><span class="status-badge status-entregado">OK</span></td><td><span class="btn-icon-sm edit"><i class="fas fa-pen"></i></span></td></tr>
+            <tr><td>Peluches medianos</td><td>Complementos</td><td class="stock-ok">12 und</td><td>5</td><td>S/ 18.00</td><td><span class="status-badge status-entregado">OK</span></td><td><span class="btn-icon-sm edit"><i class="fas fa-pen"></i></span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ======= CLIENTES ======= -->
+    <div class="page-section" id="sec-clientes">
+      <div class="section-header">
+        <h3>Gestión de Clientes</h3>
+        <button class="btn-primary-admin" data-bs-toggle="modal" data-bs-target="#modalCliente">
+          <i class="fas fa-plus"></i> Nuevo Cliente
+        </button>
+      </div>
+      <div class="table-card">
+        <table>
+          <thead>
+            <tr><th>Nombre</th><th>Teléfono</th><th>Dirección</th><th>Pedidos</th><th>Total gastado</th><th>Acciones</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>María López</td><td>987654321</td><td>Av. El Sol 120</td><td>5</td><td>S/ 420</td><td><span class="btn-icon-sm edit"><i class="fas fa-eye"></i></span></td></tr>
+            <tr><td>José Cárdenas</td><td>956321478</td><td>Jr. Hatun Rumiyoc 45</td><td>3</td><td>S/ 285</td><td><span class="btn-icon-sm edit"><i class="fas fa-eye"></i></span></td></tr>
+            <tr><td>Ana Torres</td><td>912345678</td><td>-</td><td>8</td><td>S/ 760</td><td><span class="btn-icon-sm edit"><i class="fas fa-eye"></i></span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ======= TRABAJADORES ======= -->
+    <div class="page-section" id="sec-trabajadores">
+      <div class="section-header">
+        <h3>Gestión de Trabajadores</h3>
+        <button class="btn-primary-admin" data-bs-toggle="modal" data-bs-target="#modalTrabajador">
+          <i class="fas fa-plus"></i> Nuevo Trabajador
+        </button>
+      </div>
+      <div class="table-card">
+        <table>
+          <thead>
+            <tr><th>Nombre</th><th>Cargo</th><th>Teléfono</th><th>Ingreso</th><th>Ventas mes</th><th>Acciones</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><strong>Carmen Ríos</strong></td><td>Vendedora</td><td>945678123</td><td>01/03/2023</td><td>S/ 6,200</td><td><span class="btn-icon-sm edit"><i class="fas fa-pen"></i></span></td></tr>
+            <tr><td><strong>María Peralta</strong></td><td>Florista</td><td>978234561</td><td>15/06/2022</td><td>S/ 4,800</td><td><span class="btn-icon-sm edit"><i class="fas fa-pen"></i></span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ======= GASTOS ======= -->
+    <div class="page-section" id="sec-gastos">
+      <div class="section-header">
+        <h3>Registro de Gastos</h3>
+        <button class="btn-primary-admin" data-bs-toggle="modal" data-bs-target="#modalGasto">
+          <i class="fas fa-plus"></i> Registrar Gasto
+        </button>
+      </div>
+      <div class="kpi-grid" style="grid-template-columns: repeat(3,1fr); margin-bottom:1.5rem;">
+        <div class="kpi-card">
+          <div class="kpi-icon rose"><i class="fas fa-minus-circle"></i></div>
+          <div class="kpi-value">S/ 3,420</div>
+          <div class="kpi-label">Gastos del mes</div>
+          <div class="kpi-accent rose"></div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-icon gold"><i class="fas fa-flower"></i></div>
+          <div class="kpi-value">S/ 2,100</div>
+          <div class="kpi-label">Compra de flores</div>
+          <div class="kpi-accent gold"></div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-icon green"><i class="fas fa-chart-line"></i></div>
+          <div class="kpi-value">S/ 9,820</div>
+          <div class="kpi-label">Ganancia neta</div>
+          <div class="kpi-accent green"></div>
+        </div>
+      </div>
+      <div class="table-card">
+        <table>
+          <thead>
+            <tr><th>Descripción</th><th>Categoría</th><th>Monto</th><th>Fecha</th><th>Registrado por</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Compra rosas frescas</td><td>Flores</td><td>S/ 800</td><td>10/01/2025</td><td>Dueña</td></tr>
+            <tr><td>Transporte mercadería</td><td>Transporte</td><td>S/ 50</td><td>11/01/2025</td><td>Carmen R.</td></tr>
+            <tr><td>Papel y cintas decorativas</td><td>Materiales</td><td>S/ 120</td><td>12/01/2025</td><td>Dueña</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ======= REPORTES ======= -->
+    <div class="page-section" id="sec-reportes">
+      <div class="section-header">
+        <h3>Reportes y Estadísticas</h3>
+        <button class="btn-primary-admin"><i class="fas fa-download"></i> Exportar PDF</button>
+      </div>
+      <div class="charts-grid">
+        <div class="chart-card">
+          <div class="chart-title">Ventas mensuales</div>
+          <div class="chart-sub">Últimos 6 meses (S/)</div>
+          <canvas id="chartMensual" height="100"></canvas>
+        </div>
+        <div class="chart-card">
+          <div class="chart-title">Ventas por trabajador</div>
+          <div class="chart-sub">Este mes</div>
+          <canvas id="chartTrabajadores" height="180"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======= USUARIOS ======= -->
+    <div class="page-section" id="sec-usuarios">
+      <div class="section-header">
+        <h3>Usuarios del Sistema</h3>
+        <button class="btn-primary-admin" data-bs-toggle="modal" data-bs-target="#modalUsuario">
+          <i class="fas fa-plus"></i> Nuevo Usuario
+        </button>
+      </div>
+      <div class="table-card">
+        <table>
+          <thead>
+            <tr><th>Usuario</th><th>Nombre</th><th>Rol</th><th>Último acceso</th><th>Estado</th><th>Acciones</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>admin</td><td>Administrador</td><td><span class="status-badge status-cancelado">Admin</span></td><td>Ahora</td><td><span class="status-badge status-entregado">Activo</span></td><td><span class="btn-icon-sm edit"><i class="fas fa-pen"></i></span></td></tr>
+            <tr><td>carmen</td><td>Carmen Ríos</td><td><span class="status-badge status-preparando">Empleado</span></td><td>Hace 2h</td><td><span class="status-badge status-entregado">Activo</span></td><td><span class="btn-icon-sm edit"><i class="fas fa-pen"></i></span></td></tr>
+            <tr><td>duena</td><td>Dueña</td><td><span class="status-badge status-listo">Dueña</span></td><td>Ayer</td><td><span class="status-badge status-entregado">Activo</span></td><td><span class="btn-icon-sm edit"><i class="fas fa-pen"></i></span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div><!-- /page-content -->
+</div><!-- /main -->
+
+<!-- ===== MODALES ===== -->
+
+<!-- Modal Nuevo Pedido -->
+<div class="modal fade" id="modalPedido" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Nuevo Pedido</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row g-3">
+          <div class="col-6"><label class="admin-label">Cliente</label><input class="form-control-admin" type="text" placeholder="Nombre del cliente"></div>
+          <div class="col-6"><label class="admin-label">Teléfono</label><input class="form-control-admin" type="text" placeholder="Ej: 987654321"></div>
+          <div class="col-12"><label class="admin-label">Dirección</label><input class="form-control-admin" type="text" placeholder="Dirección de entrega"></div>
+          <div class="col-12"><label class="admin-label">Producto / Arreglo</label><input class="form-control-admin" type="text" placeholder="Describe el producto"></div>
+          <div class="col-6"><label class="admin-label">Precio (S/)</label><input class="form-control-admin" type="number" placeholder="0.00"></div>
+          <div class="col-6"><label class="admin-label">Fecha de entrega</label><input class="form-control-admin" type="date"></div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-outline-admin" data-bs-dismiss="modal">Cancelar</button>
+        <button class="btn-primary-admin"><i class="fas fa-save"></i> Guardar Pedido</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Nuevo Producto -->
+<div class="modal fade" id="modalProducto" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Nuevo Producto</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row g-3">
+          <div class="col-8"><label class="admin-label">Nombre</label><input class="form-control-admin" type="text" placeholder="Nombre del producto"></div>
+          <div class="col-4">
+            <label class="admin-label">Categoría</label>
+            <select class="form-select-admin">
+              <option>Ramos</option><option>Cajas</option><option>Arreglos</option><option>Sorpresas</option>
+            </select>
+          </div>
+          <div class="col-12"><label class="admin-label">Descripción</label><textarea class="form-control-admin" rows="2" placeholder="Descripción del producto"></textarea></div>
+          <div class="col-4"><label class="admin-label">Precio venta (S/)</label><input class="form-control-admin" type="number" placeholder="0.00"></div>
+          <div class="col-4"><label class="admin-label">Costo (S/)</label><input class="form-control-admin" type="number" placeholder="0.00"></div>
+          <div class="col-4"><label class="admin-label">Stock</label><input class="form-control-admin" type="number" placeholder="0"></div>
+          <div class="col-12"><label class="admin-label">URL de imagen</label><input class="form-control-admin" type="url" placeholder="https://..."></div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-outline-admin" data-bs-dismiss="modal">Cancelar</button>
+        <button class="btn-primary-admin"><i class="fas fa-save"></i> Guardar Producto</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Venta -->
+<div class="modal fade" id="modalVenta" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Registrar Venta</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row g-3">
+          <div class="col-12">
+            <label class="admin-label">Producto</label>
+            <select class="form-select-admin">
+              <option>Ramo Romántico — S/ 85</option>
+              <option>Caja de Rosas — S/ 120</option>
+              <option>Arreglo Festivo — S/ 65</option>
+            </select>
+          </div>
+          <div class="col-4"><label class="admin-label">Cantidad</label><input class="form-control-admin" type="number" value="1" min="1"></div>
+          <div class="col-4"><label class="admin-label">Total (S/)</label><input class="form-control-admin" type="number" placeholder="0.00"></div>
+          <div class="col-4">
+            <label class="admin-label">Método de pago</label>
+            <select class="form-select-admin">
+              <option>Efectivo</option><option>Yape</option><option>Plin</option><option>Tarjeta</option>
+            </select>
+          </div>
+          <div class="col-12"><label class="admin-label">Trabajador</label>
+            <select class="form-select-admin">
+              <option>Carmen Ríos</option><option>María Peralta</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-outline-admin" data-bs-dismiss="modal">Cancelar</button>
+        <button class="btn-rose-admin"><i class="fas fa-check"></i> Registrar Venta</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Inventario -->
+<div class="modal fade" id="modalInventario" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Agregar / Actualizar Material</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row g-3">
+          <div class="col-8"><label class="admin-label">Material</label><input class="form-control-admin" type="text" placeholder="Nombre del material"></div>
+          <div class="col-4">
+            <label class="admin-label">Categoría</label>
+            <select class="form-select-admin">
+              <option>Flores</option><option>Decoración</option><option>Complementos</option><option>Materiales</option>
+            </select>
+          </div>
+          <div class="col-4"><label class="admin-label">Stock actual</label><input class="form-control-admin" type="number" placeholder="0"></div>
+          <div class="col-4"><label class="admin-label">Stock mínimo</label><input class="form-control-admin" type="number" placeholder="0"></div>
+          <div class="col-4"><label class="admin-label">Precio unit. (S/)</label><input class="form-control-admin" type="number" placeholder="0.00"></div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-outline-admin" data-bs-dismiss="modal">Cancelar</button>
+        <button class="btn-primary-admin"><i class="fas fa-save"></i> Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Cliente -->
+<div class="modal fade" id="modalCliente" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Nuevo Cliente</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row g-3">
+          <div class="col-12"><label class="admin-label">Nombre completo</label><input class="form-control-admin" type="text" placeholder="Nombre y apellido"></div>
+          <div class="col-6"><label class="admin-label">Teléfono</label><input class="form-control-admin" type="text" placeholder="9XXXXXXXX"></div>
+          <div class="col-6"><label class="admin-label">Dirección (opcional)</label><input class="form-control-admin" type="text" placeholder="Dirección"></div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-outline-admin" data-bs-dismiss="modal">Cancelar</button>
+        <button class="btn-primary-admin"><i class="fas fa-save"></i> Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Gasto -->
+<div class="modal fade" id="modalGasto" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Registrar Gasto</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row g-3">
+          <div class="col-12"><label class="admin-label">Descripción</label><input class="form-control-admin" type="text" placeholder="¿En qué se gastó?"></div>
+          <div class="col-6">
+            <label class="admin-label">Categoría</label>
+            <select class="form-select-admin">
+              <option>Flores</option><option>Transporte</option><option>Materiales</option><option>Mantenimiento</option><option>Otros</option>
+            </select>
+          </div>
+          <div class="col-6"><label class="admin-label">Monto (S/)</label><input class="form-control-admin" type="number" placeholder="0.00"></div>
+          <div class="col-6"><label class="admin-label">Fecha</label><input class="form-control-admin" type="date"></div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-outline-admin" data-bs-dismiss="modal">Cancelar</button>
+        <button class="btn-rose-admin"><i class="fas fa-save"></i> Registrar Gasto</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Trabajador -->
+<div class="modal fade" id="modalTrabajador" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Nuevo Trabajador</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row g-3">
+          <div class="col-12"><label class="admin-label">Nombre completo</label><input class="form-control-admin" type="text" placeholder="Nombre y apellido"></div>
+          <div class="col-6"><label class="admin-label">Teléfono</label><input class="form-control-admin" type="text" placeholder="9XXXXXXXX"></div>
+          <div class="col-6">
+            <label class="admin-label">Cargo</label>
+            <select class="form-select-admin">
+              <option>Vendedora</option><option>Florista</option><option>Repartidor</option><option>Administrador</option>
+            </select>
+          </div>
+          <div class="col-6"><label class="admin-label">Fecha de ingreso</label><input class="form-control-admin" type="date"></div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-outline-admin" data-bs-dismiss="modal">Cancelar</button>
+        <button class="btn-primary-admin"><i class="fas fa-save"></i> Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Usuario -->
+<div class="modal fade" id="modalUsuario" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Nuevo Usuario del Sistema</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row g-3">
+          <div class="col-6"><label class="admin-label">Nombre completo</label><input class="form-control-admin" type="text"></div>
+          <div class="col-6"><label class="admin-label">Usuario (login)</label><input class="form-control-admin" type="text"></div>
+          <div class="col-6"><label class="admin-label">Contraseña</label><input class="form-control-admin" type="password"></div>
+          <div class="col-6">
+            <label class="admin-label">Rol</label>
+            <select class="form-select-admin">
+              <option>Empleado</option><option>Administrador</option><option>Dueña</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-outline-admin" data-bs-dismiss="modal">Cancelar</button>
+        <button class="btn-primary-admin"><i class="fas fa-save"></i> Crear Usuario</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+
+// === AUTH CHECK ===
+const rol = localStorage.getItem('rol') || 'administrador';
+const rolMap = { administrador: 'Admin', empleado: 'Empleado', duena: 'Dueña' };
+document.getElementById('sidebarUserRole').textContent = rolMap[rol] || rol;
+document.getElementById('sidebarUserName').textContent = rol === 'duena' ? 'Dueña' : rol === 'empleado' ? 'Empleado' : 'Administrador';
+document.getElementById('avatarInitial').textContent = (document.getElementById('sidebarUserName').textContent[0] || 'A').toUpperCase();
+
+// === DATE ===
+const now = new Date();
+document.getElementById('topbarDate').textContent = now.toLocaleDateString('es-PE', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+
+// === NAVIGATION ===
+const sectionTitles = {
+  dashboard:'Dashboard', pedidos:'Pedidos', ventas:'Ventas',
+  productos:'Productos', inventario:'Inventario', clientes:'Clientes',
+  trabajadores:'Trabajadores', gastos:'Gastos', reportes:'Reportes', usuarios:'Usuarios'
+};
+
+function showSection(name, link) {
+  document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
+  document.getElementById('sec-' + name)?.classList.add('active');
+  document.querySelectorAll('.sidebar-nav a').forEach(a => a.classList.remove('active'));
+  if (link) link.classList.add('active');
+  document.getElementById('topbarTitle').textContent = sectionTitles[name] || name;
+  // Init charts when navigating to reportes
+  if (name === 'reportes') initReporteCharts();
+}
+
+// === CHARTS: DASHBOARD ===
+const ctx1 = document.getElementById('chartVentas')?.getContext('2d');
+if (ctx1) new Chart(ctx1, {
+  type: 'bar',
+  data: {
+    labels: ['Lun','Mar','Mié','Jue','Vie','Sáb','Dom'],
+    datasets: [{
+      label: 'Ventas (S/)',
+      data: [680, 920, 1100, 760, 1240, 1580, 430],
+      backgroundColor: 'rgba(45,74,45,0.15)',
+      borderColor: '#2d4a2d',
+      borderWidth: 2, borderRadius: 6,
+      hoverBackgroundColor: 'rgba(201,99,106,0.2)',
+      hoverBorderColor: '#c9636a',
+    }]
+  },
+  options: {
+    responsive: true, plugins: { legend: { display: false } },
+    scales: {
+      x: { grid: { display: false }, ticks: { font: { family: 'Jost', size: 11 } } },
+      y: { grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { font: { family: 'Jost', size: 11 }, callback: v => 'S/'+v } }
+    }
+  }
+});
+
+const ctx2 = document.getElementById('chartTop')?.getContext('2d');
+if (ctx2) new Chart(ctx2, {
+  type: 'doughnut',
+  data: {
+    labels: ['Ramo Romántico','Caja Rosas','Bouquet Nupcial','Arreglo Festivo','Otros'],
+    datasets: [{
+      data: [28, 19, 15, 22, 16],
+      backgroundColor: ['#2d4a2d','#c9636a','#c8a96e','#8aab7a','#e8a0a5'],
+      borderWidth: 0, hoverOffset: 6,
+    }]
+  },
+  options: {
+    responsive: true, cutout: '65%',
+    plugins: {
+      legend: { position: 'bottom', labels: { font: { family: 'Jost', size: 11 }, padding: 12 } }
+    }
+  }
+});
+
+// === CHARTS: REPORTES ===
+let reporteChartsInit = false;
+function initReporteCharts() {
+  if (reporteChartsInit) return;
+  reporteChartsInit = true;
+
+  const ctxM = document.getElementById('chartMensual')?.getContext('2d');
+  if (ctxM) new Chart(ctxM, {
+    type: 'line',
+    data: {
+      labels: ['Ago','Sep','Oct','Nov','Dic','Ene'],
+      datasets: [{
+        label: 'Ventas (S/)',
+        data: [12400, 14200, 11800, 19600, 22400, 18350],
+        borderColor: '#c9636a', backgroundColor: 'rgba(201,99,106,0.08)',
+        tension: 0.4, fill: true, borderWidth: 2.5, pointRadius: 4, pointBackgroundColor: '#c9636a'
+      }]
+    },
+    options: {
+      responsive: true, plugins: { legend: { display: false } },
+      scales: {
+        x: { grid: { display: false }, ticks: { font: { family: 'Jost', size: 11 } } },
+        y: { grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { font: { family: 'Jost', size: 11 }, callback: v => 'S/'+v.toLocaleString() } }
+      }
+    }
+  });
+
+  const ctxT = document.getElementById('chartTrabajadores')?.getContext('2d');
+  if (ctxT) new Chart(ctxT, {
+    type: 'bar',
+    data: {
+      labels: ['Carmen Ríos','María Peralta'],
+      datasets: [{
+        data: [6200, 4800],
+        backgroundColor: ['#2d4a2d','#c9636a'],
+        borderRadius: 6, borderWidth: 0
+      }]
+    },
+    options: {
+      responsive: true, indexAxis: 'y',
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { callback: v => 'S/'+v } },
+        y: { grid: { display: false } }
+      }
+    }
+  });
+}
+
+// === LOGOUT ===
+function logout() {
+  if (confirm('¿Deseas cerrar sesión?')) {
+    localStorage.removeItem('token');
+    localStorage.removeItem('rol');
+    window.location.href = 'index.html';
+  }
+}
+</script>
+</body>
+</html>
