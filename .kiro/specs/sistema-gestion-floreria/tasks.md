@@ -248,13 +248,13 @@ Este plan cubre la implementación completa del sistema de gestión de florería
     - _Requisitos: 4.3, 4.4, 4.5, 4.7, 4.9_
 
 
-  - [-] 9.4 Escribir unit tests para módulo de laboratorio
+  - [x] 9.4 Escribir unit tests para módulo de laboratorio
     - Test de cálculo de costo con múltiples ingredientes
     - Test de cálculo de precio sugerido con margen
     - Test de validación de inventario insuficiente
     - Test de guardado de arreglo con receta
 
-- [~] 10. Checkpoint - Verificar productos, inventario y laboratorio
+- [x] 10. Checkpoint - Verificar productos, inventario y laboratorio
   - Asegurar que todos los tests pasen, preguntar al usuario si surgen dudas.
 
 - [~] 11. Implementar módulo de pedidos

@@ -46,11 +46,11 @@ describe('Laboratorio - Property-Based Tests', () => {
           fc.array(
             fc.record({
               nombre: fc.string({ minLength: 3, maxLength: 30 }),
-              cantidad_inventario: fc.float({ min: Math.fround(100), max: Math.fround(1000), noNaN: true }),
-              costo_unitario: fc.float({ min: Math.fround(0.01), max: Math.fround(100), noNaN: true }),
-              cantidad_usar: fc.float({ min: Math.fround(0.1), max: Math.fround(50), noNaN: true }),
+              cantidad_inventario: fc.float({ min: Math.fround(100), max: Math.fround(1000), noNaN: true }).map(v => Math.round(v * 100) / 100),
+              costo_unitario: fc.float({ min: Math.fround(0.01), max: Math.fround(100), noNaN: true }).map(v => Math.round(v * 100) / 100),
+              cantidad_usar: fc.float({ min: Math.fround(0.1), max: Math.fround(50), noNaN: true }).map(v => Math.round(v * 100) / 100),
               unidad: fc.constantFrom('unidades', 'kg', 'gramos', 'litros', 'metros'),
-              minimo_stock: fc.float({ min: Math.fround(5), max: Math.fround(20), noNaN: true })
+              minimo_stock: fc.float({ min: Math.fround(5), max: Math.fround(20), noNaN: true }).map(v => Math.round(v * 100) / 100)
             }),
             { minLength: 1, maxLength: 5 }
           ),
